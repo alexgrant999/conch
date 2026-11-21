@@ -49,6 +49,7 @@ gh repo clone "$TAP" "$WORK/tap" -- -q
 mkdir -p "$WORK/tap/Casks"
 sed -e "s/@VERSION@/$VERSION/" -e "s/@SHA256@/$SHA/" scripts/conch.rb.template > "$WORK/tap/Casks/conch.rb"
 git -C "$WORK/tap" add Casks/conch.rb
-git -C "$WORK/tap" commit -q -m "conch $VERSION"
+# The tap is public, so its commits use GitHub's no-reply address rather than the global git email.
+git -C "$WORK/tap" -c user.name="Alex Grant" -c user.email="4098580+alexgrant999@users.noreply.github.com" commit -q -m "conch $VERSION"
 git -C "$WORK/tap" push -q
 echo "Released. Install with: brew install --cask alexgrant999/conch/conch"
