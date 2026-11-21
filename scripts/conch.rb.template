@@ -1,0 +1,19 @@
+cask "conch" do
+  version "@VERSION@"
+  sha256 "@SHA256@"
+
+  url "https://github.com/alexgrant999/conch/releases/download/v#{version}/Conch-#{version}.zip"
+  name "Conch"
+  desc "Terminal manager for running many Claude Code sessions side by side"
+  homepage "https://github.com/alexgrant999/conch"
+
+  depends_on macos: ">= :sonoma"
+  depends_on arch: :arm64
+
+  app "Conch.app"
+
+  zap trash: [
+    "~/Library/Application Support/Conch",
+    "~/Library/Preferences/com.alexgrant.conch.plist",
+  ]
+end
