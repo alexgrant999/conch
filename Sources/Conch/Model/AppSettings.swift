@@ -22,6 +22,10 @@ final class AppSettings: ObservableObject {
     @Published var showUsageInToolbar: Bool = true {
         didSet { defaults.set(showUsageInToolbar, forKey: Key.showUsageInToolbar) }
     }
+    /// Default true. Copy in a Claude session drops the indent and rejoins the lines Claude Code wrapped.
+    @Published var cleanCopiedText: Bool = true {
+        didSet { defaults.set(cleanCopiedText, forKey: Key.cleanCopiedText) }
+    }
     /// Default true.
     @Published var restoreSessionsOnLaunch: Bool = true {
         didSet { defaults.set(restoreSessionsOnLaunch, forKey: Key.restoreSessionsOnLaunch) }
@@ -74,6 +78,7 @@ final class AppSettings: ObservableObject {
         static let optionAsMeta = "conch.optionAsMeta"
         static let remoteControlByDefault = "conch.remoteControlByDefault"
         static let showUsageInToolbar = "conch.showUsageInToolbar"
+        static let cleanCopiedText = "conch.cleanCopiedText"
         static let restoreSessionsOnLaunch = "conch.restoreSessionsOnLaunch"
         static let notifyWhenDone = "conch.notifyWhenDone"
         static let notifyOnBell = "conch.notifyOnBell"
@@ -95,6 +100,7 @@ final class AppSettings: ObservableObject {
         if let value = defaults.object(forKey: Key.optionAsMeta) as? Bool { optionAsMeta = value }
         if let value = defaults.object(forKey: Key.remoteControlByDefault) as? Bool { remoteControlByDefault = value }
         if let value = defaults.object(forKey: Key.showUsageInToolbar) as? Bool { showUsageInToolbar = value }
+        if let value = defaults.object(forKey: Key.cleanCopiedText) as? Bool { cleanCopiedText = value }
         if let value = defaults.object(forKey: Key.restoreSessionsOnLaunch) as? Bool { restoreSessionsOnLaunch = value }
         if let value = defaults.object(forKey: Key.notifyWhenDone) as? Bool { notifyWhenDone = value }
         if let value = defaults.object(forKey: Key.notifyOnBell) as? Bool { notifyOnBell = value }

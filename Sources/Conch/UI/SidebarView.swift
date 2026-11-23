@@ -122,8 +122,12 @@ struct SidebarView: View {
             Button("Reveal in Finder") { AppActions.revealInFinder(dir) }
             Button("Open in VS Code") { AppActions.openInEditor(dir) }
             Button("Copy Path") { AppActions.copyToPasteboard(dir) }
+            if AppActions.claudeSessionID(of: session) != nil {
+                Button("Copy Session ID") { AppActions.copySessionID(session) }
+            }
             if let group = store.group(containing: session) {
                 let project = store.project(of: group)
+                Button("Open Project Folder") { AppActions.openProjectFolder(project.root) }
                 ProjectIconMenu(root: project.root, name: project.name)
             }
             Divider()
@@ -210,6 +214,14 @@ private struct SidebarSectionHeader: View {
                 .truncationMode(.middle)
                 .help(section.id.abbreviatingHome)
             Spacer(minLength: 4)
+            Button {
+                AppActions.openProjectFolder(section.id)
+            } label: {
+                Image(systemName: "folder")
+            }
+            .buttonStyle(.borderless)
+            .opacity(isHovering ? 1 : 0)
+            .help("Open \(section.name) in Finder (⇧⌘O for the current session's project)")
             Menu {
                 Button("New Claude Session") { AppActions.newClaude(in: section.id) }
                 Button("New Terminal") { AppActions.newTerminal(in: section.id) }
@@ -224,6 +236,9 @@ private struct SidebarSectionHeader: View {
         }
         .contentShape(Rectangle())
         .onHover { isHovering = $0 }
-        .contextMenu { ProjectIconMenu(root: section.id, name: section.name) }
+        .contextMenu {
+            Button("Open Project Folder") { AppActions.openProjectFolder(section.id) }
+            ProjectIconMenu(root: section.id, name: section.name)
+        }
     }
 }

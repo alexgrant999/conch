@@ -99,6 +99,11 @@ enum AppActions {
         store.renamingSessionID = session.id
     }
 
+    /// Opens the folder itself in a Finder window (Reveal in Finder selects it inside its parent instead).
+    static func openProjectFolder(_ root: String) {
+        NSWorkspace.shared.open(URL(fileURLWithPath: root.expandingTilde, isDirectory: true))
+    }
+
     static func revealInFinder(_ path: String) {
         NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: path.expandingTilde)])
     }
@@ -106,6 +111,23 @@ enum AppActions {
     /// Opens the folder in VS Code (`code` CLI via the login shell when available, else `open -a "Visual Studio Code"`).
     static func openInEditor(_ path: String) {
         ConchEditorLauncher.shared.open(path.expandingTilde)
+    }
+
+    /// The Claude conversation id a session is on now: the one Claude Code last reported (it changes after /clear or
+    /// /resume), else the one the session was started with. nil for terminals.
+    static func claudeSessionID(of session: TerminalSession) -> String? {
+        guard session.spec.kind == .claude else { return nil }
+        return (session.context?.claudeSessionID ?? session.spec.claude?.sessionID)?.uuidString.lowercased()
+    }
+
+    /// Copies the session's Claude conversation id, to paste into another session. Says so, since nothing else shows.
+    static func copySessionID(_ session: TerminalSession) {
+        guard let id = claudeSessionID(of: session) else {
+            Toast.show("Only Claude sessions have a session ID")
+            return
+        }
+        copyToPasteboard(id)
+        Toast.show("Copied session ID \(id.prefix(8))…")
     }
 
     static func copyToPasteboard(_ text: String) {

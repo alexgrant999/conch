@@ -201,9 +201,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
         menu.addItem(.separator())
         menu.addItem(item("Clear Scrollback", #selector(clearScrollback(_:)), "k"))
         menu.addItem(.separator())
+        menu.addItem(item("Open Project Folder", #selector(openProjectFolder(_:)), "O"))
         menu.addItem(item("Reveal in Finder", #selector(revealInFinder(_:))))
         menu.addItem(item("Open in VS Code", #selector(openInEditor(_:))))
         menu.addItem(item("Copy Path", #selector(copyPath(_:))))
+        menu.addItem(item("Copy Session ID", #selector(copySessionID(_:)), "C"))
         addLayoutMenuItems(to: menu)
         addContextMenuItems(to: menu)
         return menu
@@ -235,6 +237,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
         let menu = NSMenu(title: "View")
         menu.addItem(item("Toggle Sidebar", #selector(toggleSidebarMenu(_:)), "b"))
         menu.addItem(item("Command Palette", #selector(showCommandPalette(_:)), "P"))
+        menu.addItem(item("Keyboard Shortcuts", #selector(showShortcuts(_:)), "/"))
         menu.addItem(.separator())
         menu.addItem(item("Bigger", #selector(biggerText(_:)), "="))
         menu.addItem(item("Smaller", #selector(smallerText(_:)), "-"))
@@ -311,7 +314,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
             return view.validateUserInterfaceItem(menuItem)
         case #selector(splitRightTerminal(_:)), #selector(splitRightClaude(_:)),
              #selector(renameSession(_:)), #selector(clearScrollback(_:)),
-             #selector(revealInFinder(_:)), #selector(openInEditor(_:)), #selector(copyPath(_:)):
+             #selector(revealInFinder(_:)), #selector(openInEditor(_:)), #selector(copyPath(_:)),
+             #selector(openProjectFolder(_:)), #selector(copySessionID(_:)):
             return hasActive
         case #selector(closeSession(_:)):
             return otherKeyWindow() != nil || hasActive
@@ -365,6 +369,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
 
     @objc private func terminalFind(_ sender: Any?) { store.activeSession?.view.performFindPanelAction(sender) }
 
+    @objc private func showShortcuts(_ sender: Any?) { ShortcutsOverlay.toggle() }
+
+    @objc private func openProjectFolder(_ sender: Any?) {
+        guard let group = store.selectedGroup else { return }
+        AppActions.openProjectFolder(store.project(of: group).root)
+    }
+
     @objc private func revealInFinder(_ sender: Any?) {
         guard let session = store.activeSession else { return }
         AppActions.revealInFinder(session.currentDirectory)
@@ -373,6 +384,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
     @objc private func openInEditor(_ sender: Any?) {
         guard let session = store.activeSession else { return }
         AppActions.openInEditor(session.currentDirectory)
+    }
+
+    @objc private func copySessionID(_ sender: Any?) {
+        guard let session = store.activeSession else { return }
+        AppActions.copySessionID(session)
     }
 
     @objc private func copyPath(_ sender: Any?) {

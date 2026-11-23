@@ -126,6 +126,23 @@ extension SmokeTest {
             return finish(false, "Cmd+J with nothing waiting showed \(Toast.currentMessage ?? "no message")")
         }
         Toast.dismiss()
+
+        // The shortcuts sheet lists what the menus really bind, and opens and closes.
+        let listed = ShortcutsOverlay.groups().flatMap(\.entries)
+        for (keys, title) in [("⌘J", "Jump to Next Waiting"), ("⇧⌘O", "Open Project Folder"), ("⌘/", "Keyboard Shortcuts"),
+                              ("⌥⌘N", "New Claude in Worktree"), ("⌘1 to ⌘9", "Jump to a session")]
+        where !listed.contains(ShortcutEntry(keys: keys, title: title)) {
+            return finish(false, "shortcuts sheet lacks \(keys) \(title): \(listed.map { $0.keys + " " + $0.title })")
+        }
+        if windowShown {
+            ShortcutsOverlay.show()
+            guard ShortcutsOverlay.isShown else { return finish(false, "shortcuts sheet did not open") }
+            if let path = ProcessInfo.processInfo.environment["CONCH_SMOKE_SNAPSHOT"], let png = ShortcutsOverlay.snapshot() {
+                try? png.write(to: URL(fileURLWithPath: path))
+            }
+            ShortcutsOverlay.toggle()
+            if ShortcutsOverlay.isShown { return finish(false, "shortcuts sheet did not close") }
+        }
         _ = await waitUntil(1) { store.waitingCountPublisher.value == 0 }
         finish(store.waitingCountPublisher.value == 0,
                "order \(waiting.map(label).joined(separator: ", ")), repeat press moves on, all cleared, menu and palette "

@@ -122,6 +122,8 @@ final class SmokeTest {
         // 5. Launch command rules.
         let (launchOK, launchDetail) = checkLaunchCommand(directory: directory)
         record("5 launch command", launchOK, launchDetail)
+        let copyFailures = checkCopyCleanup()
+        record("5b copy cleanup", copyFailures.isEmpty, copyFailures.joined(separator: "; "))
 
         // 6. Saved state round-trips.
         store.save()
@@ -196,6 +198,59 @@ final class SmokeTest {
             return group != nil
         }
         return group.map { (session, $0) }
+    }
+
+    private func checkCopyCleanup() -> [String] {
+        let cases: [(name: String, raw: String, expected: String)] = [
+            ("wrapped paragraph",
+             "\u{23FA} Here is the message:\n\n  Hi Sam, thanks for getting back to me\n  about the proposal. Happy to talk it\n  over on Friday.\n\n  Alex",
+             "Here is the message:\n\nHi Sam, thanks for getting back to me about the proposal. Happy to talk it over on Friday.\n\nAlex"),
+            ("selection starting mid-row",
+             "Hi Sam, thanks for getting back to me\n  about the proposal.   ",
+             "Hi Sam, thanks for getting back to me about the proposal."),
+            ("short lines stay apart", "  npm install\n  npm run dev", "npm install\nnpm run dev"),
+            ("list items stay apart",
+             "  - one item that runs right up to edge\n  - two\n  1. three",
+             "- one item that runs right up to edge\n- two\n1. three"),
+            ("long token cut mid-word",
+             "  https://example.com/a/very/long/path/\n  that/keeps/going",
+             "https://example.com/a/very/long/path/that/keeps/going"),
+            ("nested indent kept", "  if x {\n      y()\n  }", "if x {\n    y()\n}"),
+        ]
+        var failures = cases.compactMap { item -> String? in
+            let cleaned = CopyCleanup.clean(item.raw, columns: 44)
+            return cleaned == item.expected ? nil : "\(item.name): \(cleaned.debugDescription)"
+        }
+
+        // A real selection out of a 77 column Claude session: a prompt, then a three paragraph reply.
+        let transcript = """
+            \u{276F} did we fix the module so i can copy text here without the weird line     
+              breaks                                                                   
+              
+            \u{23FA} No, nothing in this session touched that. The only work here was building
+              the notifications module, and it has nothing to do with how copied text
+              wraps.
+
+              If you mean copying text out of the terminal in Conch and getting hard
+              line breaks at the wrap points, that would be a fix in the conch repo,
+              and I haven't looked at it or seen it done. If you mean somewhere else (a
+              field in one of the modules, say), tell me where "here" is and I'll
+              check.
+
+              Do you want me to look at Conch's copy behaviour now?
+            """
+        let expected = """
+            \u{276F} did we fix the module so i can copy text here without the weird line breaks
+
+            No, nothing in this session touched that. The only work here was building the notifications module, and it has nothing to do with how copied text wraps.
+
+            If you mean copying text out of the terminal in Conch and getting hard line breaks at the wrap points, that would be a fix in the conch repo, and I haven't looked at it or seen it done. If you mean somewhere else (a field in one of the modules, say), tell me where "here" is and I'll check.
+
+            Do you want me to look at Conch's copy behaviour now?
+            """
+        let cleaned = CopyCleanup.clean(transcript, columns: 77)
+        if cleaned != expected { failures.append("transcript: \(cleaned.debugDescription)") }
+        return failures
     }
 
     private func checkLaunchCommand(directory: String) -> (Bool, String) {

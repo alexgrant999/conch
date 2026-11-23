@@ -5,7 +5,7 @@ import Foundation
 enum ConchInfo {
     static let appName = "Conch"
     static let bundleID = "com.alexgrant.conch"
-    static let version = "0.2.0"
+    static let version = "0.2.1"
     /// A test run (CONCH_STATE_PATH set). It stays in the background, with no Dock icon and never activated, so a
     /// smoke test or a builder's throwaway instance never takes focus from the app in use.
     static let isIsolated = !(ProcessInfo.processInfo.environment["CONCH_STATE_PATH"] ?? "").isEmpty

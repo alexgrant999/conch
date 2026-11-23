@@ -23,6 +23,9 @@ final class ConchTerminalView: LocalProcessTerminalView {
     /// Receives user input timestamps for echo filtering. Set by TerminalSession.
     var activityTracker: ActivityTracker?
 
+    /// True for Claude sessions: Copy puts the cleaned-up selection on the pasteboard (see CopyCleanup).
+    var cleansCopiedText = false
+
     private var isResponder = false
     private var isClosed = false
 
@@ -68,6 +71,17 @@ final class ConchTerminalView: LocalProcessTerminalView {
         activityTracker?.noteInput()
         onUserInput?()
         super.paste(sender)
+    }
+
+    override func copy(_ sender: Any) {
+        super.copy(sender)
+        guard cleansCopiedText, AppSettings.shared.cleanCopiedText else { return }
+        let pasteboard = NSPasteboard.general
+        guard let raw = pasteboard.string(forType: .string), !raw.isEmpty else { return }
+        let cleaned = CopyCleanup.clean(raw, columns: terminalDimensions.cols)
+        guard cleaned != raw else { return }
+        pasteboard.clearContents()
+        pasteboard.setString(cleaned, forType: .string)
     }
 
     /// Writes text to the pty as if typed.

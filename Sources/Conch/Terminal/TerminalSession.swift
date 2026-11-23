@@ -83,6 +83,7 @@ final class TerminalSession: ObservableObject, Identifiable {
         // Option+Return, Option+Backspace and Option+arrows stay Meta even when Option-as-Meta is off for text.
         view.optionAsMetaKeyForFunctionalKeys = true
         view.activityTracker = tracker
+        view.cleansCopiedText = spec.kind != .shell
         view.processDelegate = self
         view.setProcessOutputHandler { [tracker] in tracker.noteOutput() }
         view.onBell = { [weak self] in self?.raiseAttention(.needsInput(message: nil), notify: true) }

@@ -63,6 +63,10 @@ struct SettingsView: View {
                     Text("Show usage in toolbar")
                     Text("Your plan's 5-hour and weekly limits and the last prompt's cost, as Claude Code reports them. Click it for cost by main model.")
                 }
+                Toggle(isOn: $settings.cleanCopiedText) {
+                    Text("Clean up copied text")
+                    Text("Copy in a Claude session drops the indent and rejoins wrapped lines, so the text pastes the way Claude wrote it.")
+                }
             }
 
             Section("Sessions") {

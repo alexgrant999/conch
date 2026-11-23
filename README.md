@@ -19,6 +19,8 @@ How sessions work
 
 Every session is a pty running your login shell. A Claude session runs `claude --session-id <uuid>` inside it and drops you into a shell when Claude exits. On relaunch it comes back as `claude --resume <uuid>`, so sessions survive quitting the app. With Remote Control on (the default, in Settings), new Claude sessions also appear in claude.ai/code and the Claude mobile app.
 
+Copy in a Claude session gives you the text the way Claude wrote it: the response marker and the two-space indent are dropped and lines Claude Code wrapped at the edge of the pane are joined back into paragraphs, so a message or a command pastes cleanly. Lists, tables and short lines stay as they are, and shell sessions copy exactly what is on screen. Turn it off in Settings, Claude, Clean up copied text.
+
 A web session (Cmd+Shift+N) runs `claude --cloud` with a task description, or attaches to an existing one when you paste a `session_...` id or claude.ai/code link into Quick Open.
 
 To bring a Claude Code session from another terminal into Conch, exit it there, then paste its session id (or the `claude --resume <id>` line) into Quick Open and pick Resume Claude session. It reopens in the folder it ran in and from then on restores with the app like any other session.
@@ -64,6 +66,8 @@ Shortcuts
     Cmd+Shift+N         New web session
     Cmd+Option+N        New Claude session in a git worktree
     Cmd+O               Open folder
+    Cmd+Shift+O         Open the current session's project folder in Finder
+    Cmd+Shift+C         Copy the current Claude session's ID
     Cmd+P               Quick Open (sessions, layouts, recent conversations, folders, projects)
     Cmd+J               Jump to the next session waiting for you
     Cmd+Shift+M         Modules window
@@ -74,6 +78,7 @@ Shortcuts
     Cmd+W               Close
     Cmd+K               Clear scrollback
     Cmd+B               Toggle sidebar
+    Cmd+/               Show every keyboard shortcut
     Cmd+1 to Cmd+9      Jump to a session
     Ctrl+Tab            Next session (Ctrl+Shift+Tab previous)
     Cmd+Option+Arrows   Move between panes
