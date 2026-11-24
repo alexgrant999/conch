@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+@source "../index.html";
+
+/* Tokens for the Conch site. Dark is the default, light comes from prefers-color-scheme below.
+   Neutrals are tinted toward the cool grey of the app icon, the one accent is the Claude orange the app uses for its caret. */
+@theme {
+  --color-*: initial;
+  --color-canvas: oklch(0.205 0.006 285);
+  --color-raised: oklch(0.245 0.007 285);
+  --color-key: oklch(0.3 0.008 285);
+  --color-line: oklch(0.34 0.008 285);
+  --color-ink: oklch(0.94 0.004 285);
+  --color-muted: oklch(0.74 0.008 285);
+  --color-accent: oklch(0.68 0.13 39);
+  --color-done: oklch(0.76 0.15 150);
+
+  --font-*: initial;
+  --font-sans: -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+
+  --text-*: initial;
+  --text-display: clamp(2.25rem, 1.4rem + 3.6vw, 4.25rem);
+  --text-display--line-height: 1.06;
+  --text-display--letter-spacing: -0.022em;
+  --text-title: clamp(1.75rem, 1.35rem + 1.6vw, 2.625rem);
+  --text-title--line-height: 1.12;
+  --text-title--letter-spacing: -0.02em;
+  --text-heading: 1.25rem;
+  --text-heading--line-height: 1.35;
+  --text-heading--letter-spacing: -0.01em;
+  --text-lede: clamp(1.1875rem, 1.05rem + 0.5vw, 1.4375rem);
+  --text-lede--line-height: 1.5;
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.65;
+  --text-small: 0.9375rem;
+  --text-small--line-height: 1.55;
+
+  --container-page: 76rem;
+  --container-copy: 36rem;
+
+  --radius-window: 0.75rem;
+  --radius-control: 0.5rem;
+  --radius-key: 0.3125rem;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-canvas: oklch(0.985 0.002 285);
+    --color-raised: oklch(0.955 0.004 285);
+    --color-key: oklch(0.93 0.005 285);
+    --color-line: oklch(0.87 0.006 285);
+    --color-ink: oklch(0.23 0.008 285);
+    --color-muted: oklch(0.48 0.01 285);
+    --color-accent: oklch(0.54 0.13 40);
+    --color-done: oklch(0.56 0.14 150);
+  }
+}
+
+@layer base {
+  :root {
+    color-scheme: dark light;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: color-mix(in oklch, var(--color-accent) 35%, transparent);
+  }
+}

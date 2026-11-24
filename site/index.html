@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Conch: a Claude Code session manager for Mac</title>
+  <meta name="description" content="Run multiple Claude Code sessions side by side in one native Mac app. Conch shows which session is working, finished, or waiting for you. Free and open source.">
+  <link rel="canonical" href="https://conch.alexandergrant.app/">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#17171a" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#fafafb" media="(prefers-color-scheme: light)">
+  <link rel="icon" type="image/png" sizes="32x32" href="./icons/icon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="./icons/icon-64.png">
+  <link rel="apple-touch-icon" href="./icons/icon-256.png">
+  <link rel="stylesheet" href="./styles.css">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Conch">
+  <meta property="og:url" content="https://conch.alexandergrant.app/">
+  <meta property="og:title" content="Conch: run many Claude Code sessions side by side on your Mac">
+  <meta property="og:description" content="A native macOS terminal manager for running many Claude Code sessions side by side. See which session is working, finished, or waiting for you.">
+  <meta property="og:image" content="https://conch.alexandergrant.app/media/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Conch main window: a sidebar of Claude Code sessions grouped by project with working, finished and waiting statuses, beside a split terminal showing a Claude session and a dev server.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Conch: run many Claude Code sessions side by side on your Mac">
+  <meta name="twitter:description" content="A native macOS terminal manager for running many Claude Code sessions side by side. See which session is working, finished, or waiting for you.">
+  <meta name="twitter:image" content="https://conch.alexandergrant.app/media/og.png">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Conch",
+    "description": "A native macOS terminal manager for running many Claude Code sessions side by side.",
+    "url": "https://conch.alexandergrant.app/",
+    "image": "https://conch.alexandergrant.app/media/hero.png",
+    "screenshot": "https://conch.alexandergrant.app/media/hero.png",
+    "operatingSystem": "macOS 14 or later (Apple Silicon)",
+    "applicationCategory": "DeveloperApplication",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "license": "https://opensource.org/licenses/MIT",
+    "downloadUrl": "https://github.com/alexgrant999/conch/releases/latest",
+    "installUrl": "https://github.com/alexgrant999/conch/releases/latest",
+    "sameAs": "https://github.com/alexgrant999/conch",
+    "author": { "@type": "Person", "name": "Alex Grant", "url": "https://github.com/alexgrant999" }
+  }
+  </script>
+</head>
+<body class="bg-canvas font-sans text-body text-ink antialiased">
+  <header class="mx-auto flex max-w-page items-center justify-between gap-4 px-6 py-3 md:px-10">
+    <a href="./" class="-ml-1 flex min-h-11 items-center gap-2.5 rounded-control px-1 text-heading font-semibold">
+      <img src="./icons/icon-64.png" width="32" height="32" alt="" class="size-8">
+      Conch
+    </a>
+    <nav aria-label="Main">
+      <ul class="-mr-3 flex items-center text-small">
+        <li><a href="#install" class="flex min-h-11 items-center rounded-control px-3 text-muted hover:text-ink">Install</a></li>
+        <li><a href="https://github.com/alexgrant999/conch/blob/main/docs/guide.md" class="flex min-h-11 items-center rounded-control px-3 text-muted hover:text-ink">Guide</a></li>
+        <li><a href="https://github.com/alexgrant999/conch" class="flex min-h-11 items-center rounded-control px-3 text-muted hover:text-ink">GitHub</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="overflow-x-clip">
+    <section aria-labelledby="hero-title" class="mx-auto max-w-page px-6 pt-12 pb-20 md:px-10 md:pt-20 md:pb-32">
+      <h1 id="hero-title" class="text-display font-semibold text-balance">
+        <span class="block text-muted">Ten Claude sessions running.</span>
+        <span class="block">Which one is waiting for you?</span>
+      </h1>
+      <p class="mt-6 max-w-copy text-lede text-pretty">A native macOS terminal manager for running many Claude Code sessions side by side.</p>
+
+      <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3">
+        <div class="flex w-full max-w-[34rem] items-stretch overflow-hidden rounded-control border border-line bg-raised">
+          <code class="flex-1 self-center px-4 py-3 font-mono text-small"><span aria-hidden="true" class="text-accent select-none">$ </span>brew install --cask alexgrant999/conch/conch</code>
+          <button type="button" data-copy="brew install --cask alexgrant999/conch/conch" aria-label="Copy install command" hidden class="min-h-11 min-w-18 shrink-0 cursor-pointer border-l border-line px-4 text-small font-medium hover:bg-key active:bg-line">Copy</button>
+        </div>
+        <a href="https://github.com/alexgrant999/conch/releases/latest" class="inline-flex min-h-11 items-center text-small underline decoration-muted underline-offset-4 hover:decoration-accent">Or download from GitHub</a>
+      </div>
+      <p class="mt-3 text-small text-muted">Free and open source. Needs macOS 14 or later on <span class="whitespace-nowrap">Apple Silicon</span>, and the <code class="font-mono">claude</code> CLI installed.</p>
+
+      <picture class="mt-14 flow-root md:mt-16">
+        <source type="image/webp" srcset="./media/hero-1400.webp 1400w, ./media/hero-2800.webp 2800w" sizes="(min-width: 76rem) 77rem, (min-width: 48rem) calc((100vw - 5rem) * 1.09), calc((100vw - 3rem) * 1.09)">
+        <img src="./media/hero.png" width="2944" height="1844" fetchpriority="high" alt="Conch main window: a sidebar of Claude Code sessions grouped by project with working, finished and waiting statuses, beside a split terminal showing a Claude session and a dev server." class="block h-auto w-[108.24%] max-w-none -mx-[4.12%] -mt-[2.57%] -mb-[5.66%]">
+      </picture>
+    </section>
+
+    <section aria-labelledby="status-title" class="border-y border-line bg-raised">
+      <div class="mx-auto grid max-w-page gap-10 px-6 py-16 md:px-10 md:py-24 lg:grid-cols-12 lg:gap-16">
+        <div class="lg:col-span-5">
+          <h2 id="status-title" class="text-title font-semibold text-balance">A status for every session</h2>
+          <p class="mt-5 max-w-copy text-muted text-pretty">Conch marks each session in the sidebar as it works. Press <kbd class="rounded-key border border-b-2 border-line bg-key px-1.5 py-0.5 font-sans text-small text-ink">Cmd+J</kbd> to jump to the next one that needs you, waiting sessions first.</p>
+          <p class="mt-4 max-w-copy text-muted text-pretty">You also get a macOS notification and a count on the dock icon, so you can leave Conch in the background.</p>
+        </div>
+
+        <ul class="flex flex-col gap-1 self-center lg:col-span-7">
+          <li class="flex items-start gap-4 px-4 py-4">
+            <svg aria-hidden="true" viewBox="0 0 24 24" class="mt-0.5 size-6 shrink-0 animate-spin text-muted motion-reduce:animate-none"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="40 100"/></svg>
+            <div>
+              <p class="text-heading font-semibold">Working</p>
+              <p class="text-muted">Claude is still printing output.</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-4 px-4 py-4">
+            <svg aria-hidden="true" viewBox="0 0 24 24" class="mt-0.5 size-6 shrink-0 text-done"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M7.5 12.5l3 3 6-6.5" fill="none" stroke="var(--color-raised)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div>
+              <p class="text-heading font-semibold">Finished</p>
+              <p class="text-muted">Done while you were in another session.</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-4 rounded-control bg-accent/12 px-4 py-4 ring-1 ring-accent/35">
+            <svg aria-hidden="true" viewBox="0 0 24 24" class="mt-0.5 size-6 shrink-0 text-accent"><circle cx="12" cy="12" r="7" fill="currentColor"/></svg>
+            <div>
+              <p class="text-heading font-semibold">Waiting for you</p>
+              <p class="text-muted">Claude has a question or needs your permission.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section aria-labelledby="projects-title" class="mx-auto grid max-w-page gap-10 px-6 py-24 md:px-10 md:py-32 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-4 lg:col-start-9 lg:row-start-1 lg:self-end">
+        <h2 id="projects-title" class="text-title font-semibold text-balance">One window for every project</h2>
+        <p class="mt-5 text-muted text-pretty">The sidebar groups your sessions by project. Split a pane to keep a terminal open next to Claude.</p>
+        <p class="mt-4 text-muted text-pretty">Press <kbd class="rounded-key border border-b-2 border-line bg-key px-1.5 py-0.5 font-sans text-small text-ink">Cmd+P</kbd> for Quick Open. Type a few letters to jump to a project or session, or to pick up a recent Claude conversation.</p>
+      </div>
+      <picture class="block aspect-video overflow-hidden rounded-window ring-1 ring-line lg:col-span-8 lg:col-start-1 lg:row-start-1">
+        <source type="image/webp" srcset="./media/quick-open-1400.webp 1400w, ./media/quick-open-2800.webp 2800w" sizes="(min-width: 76rem) 88rem, (min-width: 64rem) 120vw, (min-width: 48rem) calc((100vw - 5rem) * 1.92), calc((100vw - 3rem) * 1.92)">
+        <img src="./media/quick-open.png" width="2944" height="1844" loading="lazy" decoding="async" alt="Conch Quick Open palette with the query auth, listing a matching open session, recent conversations and a project folder." class="block h-auto w-[191.17%] max-w-none -mt-[4.55%] -ml-[46.75%]">
+      </picture>
+    </section>
+
+    <section aria-labelledby="more-title" class="mx-auto max-w-page px-6 pb-24 md:px-10 md:pb-32">
+      <h2 id="more-title" class="text-title font-semibold">What else it does</h2>
+      <ul class="mt-8 border-t border-line">
+        <li class="grid gap-x-16 gap-y-1 border-b border-line py-6 md:grid-cols-12">
+          <h3 class="text-heading font-semibold md:col-span-4">Sessions survive quitting</h3>
+          <p class="max-w-copy text-muted md:col-span-8">Quit Conch and open it again later. Every Claude conversation resumes where it was.</p>
+        </li>
+        <li class="grid gap-x-16 gap-y-1 border-b border-line py-6 md:grid-cols-12">
+          <h3 class="text-heading font-semibold md:col-span-4">Context and plan limits</h3>
+          <p class="max-w-copy text-muted md:col-span-8">Each session shows how much of its context it has used. The toolbar shows your plan's <span class="whitespace-nowrap">5-hour</span> and weekly limits.</p>
+        </li>
+        <li class="grid gap-x-16 gap-y-1 border-b border-line py-6 md:grid-cols-12">
+          <h3 class="text-heading font-semibold md:col-span-4">A git worktree in one shortcut</h3>
+          <p class="max-w-copy text-muted md:col-span-8">Press <kbd class="rounded-key border border-b-2 border-line bg-key px-1.5 py-0.5 font-sans text-small text-ink">Cmd+Option+N</kbd> to start a Claude session in its own git worktree and branch.</p>
+        </li>
+        <li class="grid gap-x-16 gap-y-1 border-b border-line py-6 md:grid-cols-12">
+          <h3 class="text-heading font-semibold md:col-span-4">Native, not Electron</h3>
+          <p class="max-w-copy text-muted md:col-span-8">Built with AppKit and SwiftUI, with SwiftTerm for the terminal. Open source under the MIT license.</p>
+        </li>
+      </ul>
+    </section>
+
+    <section id="install" aria-labelledby="install-title" class="scroll-mt-4 border-t border-line bg-raised">
+      <div class="mx-auto grid max-w-page gap-8 px-6 py-16 md:px-10 md:py-20 lg:grid-cols-12 lg:gap-16">
+        <div class="lg:col-span-5">
+          <h2 id="install-title" class="text-title font-semibold">Install Conch</h2>
+          <p class="mt-4 max-w-copy text-muted text-pretty">Free and open source. Needs macOS 14 or later on <span class="whitespace-nowrap">Apple Silicon</span>, and the <code class="font-mono text-ink">claude</code> CLI installed.</p>
+        </div>
+        <div class="lg:col-span-7">
+          <p class="text-small text-muted">With Homebrew</p>
+          <div class="mt-2 flex w-full max-w-[34rem] items-stretch overflow-hidden rounded-control border border-line bg-canvas">
+            <code class="flex-1 self-center px-4 py-3 font-mono text-small"><span aria-hidden="true" class="text-accent select-none">$ </span>brew install --cask alexgrant999/conch/conch</code>
+            <button type="button" data-copy="brew install --cask alexgrant999/conch/conch" aria-label="Copy install command" hidden class="min-h-11 min-w-18 shrink-0 cursor-pointer border-l border-line px-4 text-small font-medium hover:bg-key active:bg-line">Copy</button>
+          </div>
+          <p class="mt-6">Or <a href="https://github.com/alexgrant999/conch/releases/latest" class="underline decoration-muted underline-offset-4 hover:decoration-accent">download the latest release</a> from GitHub.</p>
+          <p class="mt-2">New to Conch? <a href="https://github.com/alexgrant999/conch/blob/main/docs/guide.md" class="underline decoration-muted underline-offset-4 hover:decoration-accent">Read the guide</a>.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="mx-auto flex max-w-page flex-wrap items-center justify-between gap-x-8 gap-y-2 px-6 py-8 text-small text-muted md:px-10">
+    <p><a href="https://github.com/alexgrant999" class="inline-flex min-h-11 items-center underline decoration-muted underline-offset-4 hover:text-ink">Built by Alex Grant</a></p>
+    <ul class="-mx-3 flex flex-wrap">
+      <li><a href="https://github.com/alexgrant999/conch" class="flex min-h-11 items-center px-3 hover:text-ink">GitHub</a></li>
+      <li><a href="https://github.com/alexgrant999/conch/releases/latest" class="flex min-h-11 items-center px-3 hover:text-ink">Releases</a></li>
+      <li><a href="https://github.com/alexgrant999/conch/blob/main/docs/guide.md" class="flex min-h-11 items-center px-3 hover:text-ink">Guide</a></li>
+      <li><a href="https://github.com/alexgrant999/conch/blob/main/LICENSE" class="flex min-h-11 items-center px-3 hover:text-ink">MIT license</a></li>
+    </ul>
+  </footer>
+
+  <p id="copy-status" role="status" aria-live="polite" class="sr-only"></p>
+
+  <script>
+    const status = document.getElementById('copy-status')
+    for (const button of document.querySelectorAll('[data-copy]')) {
+      button.hidden = false
+      button.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(button.dataset.copy)
+          button.textContent = 'Copied'
+          status.textContent = 'Install command copied.'
+        } catch {
+          const range = document.createRange()
+          range.selectNodeContents(button.previousElementSibling.lastChild)
+          getSelection().removeAllRanges()
+          getSelection().addRange(range)
+          button.textContent = 'Press Cmd+C'
+          status.textContent = 'Command selected. Press Cmd+C to copy it.'
+        }
+        clearTimeout(button.reset)
+        button.reset = setTimeout(() => { button.textContent = 'Copy' }, 2000)
+      })
+    }
+  </script>
+</body>
+</html>
