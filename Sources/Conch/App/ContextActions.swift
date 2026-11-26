@@ -135,7 +135,7 @@ enum ContextActions {
 
     /// Types a command at Claude Code's empty prompt. Return goes separately, because a burst of text with a CR
     /// in it can be taken for a paste.
-    private static func type(_ text: String, into session: TerminalSession) {
+    static func type(_ text: String, into session: TerminalSession) {
         session.send(text: text)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak session] in
             MainActor.assumeIsolated { session?.send(text: "\r") }
@@ -144,7 +144,7 @@ enum ContextActions {
 
     /// Commands are only typed into an empty prompt. Typed after a draft they would be sent as part of it, and
     /// clearing it from outside is not reliable (Ctrl+U deletes only from the cursor back to the line start).
-    private static func promptIsEmpty(_ session: TerminalSession) -> Bool {
+    static func promptIsEmpty(_ session: TerminalSession) -> Bool {
         let name = session.displayName
         switch promptState(session) {
         case .empty:

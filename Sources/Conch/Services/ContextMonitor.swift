@@ -201,6 +201,10 @@ final class ContextMonitor {
         if let id = reading.claudeSessionID {
             SessionStore.shared.followClaudeConversation(session, to: id)
         }
+        if let name = reading.modelName, session.modelName != name { session.modelName = name }
+        if let model = reading.modelID {
+            SessionStore.shared.followReportedModel(session, to: model)
+        }
     }
 
     private func watchDirectory() {
@@ -261,8 +265,9 @@ final class ContextMonitor {
             foregroundObservers[session.id] = session.$foregroundProcess
                 .removeDuplicates()
                 .sink { [weak session] process in
-                    guard process == nil, let session, session.context != nil else { return }
-                    session.context = nil
+                    guard process == nil, let session else { return }
+                    if session.context != nil { session.context = nil }
+                    if session.modelName != nil { session.modelName = nil }
                 }
         }
     }

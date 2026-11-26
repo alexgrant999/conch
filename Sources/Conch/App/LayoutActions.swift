@@ -17,7 +17,7 @@ enum LayoutActions {
         panes.map { pane in
             let command = pane.spec.command?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
             if pane.spec.kind == .shell, !command.isEmpty { return command }
-            return pane.customName ?? (pane.spec.kind == .claude ? "Claude" : "Terminal")
+            return pane.customName ?? (pane.spec.kind == .claude ? "Claude" : pane.spec.kind == .codex ? "Codex" : "Terminal")
         }.joined(separator: ", ")
     }
 

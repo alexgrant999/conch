@@ -59,6 +59,20 @@ struct SettingsView: View {
                     Text("Remote Control for new Claude sessions")
                     Text("New sessions also appear in claude.ai/code and the Claude app, so you can follow them from anywhere.")
                 }
+                Picker(selection: $settings.defaultModel) {
+                    Text("Claude Code's default").tag("")
+                    Divider()
+                    ForEach(ClaudeModels.families) { family in
+                        Text(family.latest.name).tag(family.alias)
+                    }
+                    Divider()
+                    ForEach(ClaudeModels.families.flatMap(\.versions)) { choice in
+                        Text(choice.name).tag(choice.model)
+                    }
+                } label: {
+                    Text("Model for new Claude sessions")
+                    Text("Switch a running session from the model menu in the toolbar. Each session keeps its model when Conch reopens.")
+                }
                 Toggle(isOn: $settings.showUsageInToolbar) {
                     Text("Show usage in toolbar")
                     Text("Your plan's 5-hour and weekly limits and the last prompt's cost, as Claude Code reports them. Click it for cost by main model.")

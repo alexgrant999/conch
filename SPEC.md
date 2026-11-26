@@ -283,3 +283,36 @@ and smoke test through one call each (see the v0.2 contract in Contract/Types.sw
   representation (an .ico or .icns holds several), never enlarged, and clipped to a 4 pt continuous rounded rectangle.
   Set Project Icon (Choose Image…, Use Emoji…, Remove Icon) is a submenu in the row and section header context menus.
   Smoke check 19.
+- Model (Model/ClaudeModels, Terminal/LaunchCommand+Model, Model/SessionStore+Model, App/ModelActions,
+  App/Menu+Model, UI/Palette+Model, UI/ModelPicker): `ClaudeOptions.model` is passed as `--model=<model>` on every
+  launch of a `.claude` session, new or resumed (a state file without it loads as nil, which passes nothing). The
+  context monitor records each report's `model.id` there and its `model.display_name` on `TerminalSession.modelName`
+  (cleared with the context reading when claude exits to the shell), so a relaunch keeps the model in use however it
+  was chosen, except that a family alias chosen in Conch stays while the reports are from that family, so the
+  session keeps following the latest model. The menus come from `ClaudeModels.families`: Fable, Opus, Sonnet and Haiku,
+  each a Latest entry (the alias) then its specific ids from the Claude API models overview, newest first, without
+  retired or limited-access models. A dated id (`-YYYYMMDD`) or a `[1m]` id checks its model's entry. Other Model…
+  takes any one-word id of letters, digits and `-._:[]` not starting with "-". Choosing, from the toolbar menu (before
+  the usage strip, active Claude session only, a submenu per family with checkmarks), the Session menu's Model submenu
+  (same shape) or the palette ("Switch Model to …": the Latest entries always, specific ones and Other only while a
+  query is typed), types `/model <model>` under the same rule as Compact (Claude at its empty prompt), records the
+  model at once and clears `modelName` until the next report. Setting `conch.defaultModel` ("" for Claude Code's
+  default, else a menu entry's model) seeds new Claude, worktree and layout sessions, and a hand off inherits its
+  source's model. Smoke check 20.
+- Codex and reviews (Terminal/LaunchCommand+Codex, Services/CodexSessions, Model/SessionStore+Codex, App/ReviewActions,
+  App/Menu+Codex, UI/Palette+Codex): `SessionKind.codex` runs `codex` through the login shell like Claude, with
+  `LaunchSpec.codex` options. A launch is `codex resume <id>` when `<CODEX_HOME or ~/.codex>/sessions` still holds a
+  `rollout-*-<id>.jsonl`, else `codex [extra] [-- <first message>]`; the first message is cleared from the spec once
+  started. Codex picks its own ids, so CodexSessionTracker (every 3 s, only while a Codex session has none) reads the
+  `session_meta` first line of rollouts in the day folders since 30 s before it first saw the session, and gives
+  each session the oldest unclaimed one for its folder (symlinks resolved) started no earlier than that. Layouts
+  save Codex panes as a fresh spec in the same folder. Copy cleanup stays Claude-only. Ask Codex to Review (a Claude
+  session) and Ask Claude to Review (a Codex session), in the Session menu and the palette, need the agent running and
+  idle and no review of it under way. They create `<folder>/.conch/reviews/` (folder: Claude's reported project
+  folder, else the live folder), add `.conch` to the repository's info/exclude, and open the other agent split into
+  the author's group, unselected, named "Codex review" or "Claude review", with a one-line request naming the note
+  file `review-<yyyyMMdd-HHmmss>-<reviewer>.md`. ReviewLoop (1 s ticks, 45 minutes) waits for the note to be written
+  since the request with the reviewer idle (and seen busy, or the file 3 s old), then types a one-line hand-back into
+  the author once it can take it: Claude at an empty prompt (ContextActions), Codex idle with no user input since the
+  request (`TerminalSession.lastInputAt`). It says once that the review is waiting, and gives up with the note's path
+  if the reviewer closes before writing it or time runs out. Smoke check 21.

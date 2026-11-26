@@ -26,6 +26,10 @@ Sessions survive quitting. Reopen Conch and every Claude conversation resumes wh
 
 Context use per session in the sidebar, and your plan's 5-hour and weekly limits in the toolbar.
 
+Run Codex sessions alongside Claude, and have each review the other's work: Ask Codex to Review opens Codex beside a Claude session, and its findings go back to Claude to fix.
+
+Switch a session's model from the toolbar, either the latest Fable, Opus, Sonnet or Haiku or a specific version such as Opus 4.8. Each session keeps its model when Conch reopens.
+
 Git worktrees: start a Claude session in its own worktree and branch with one shortcut (Cmd+Option+N).
 
 Native AppKit and SwiftUI with SwiftTerm. No Electron. MIT licensed.

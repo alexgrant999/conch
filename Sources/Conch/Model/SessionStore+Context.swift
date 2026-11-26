@@ -12,12 +12,13 @@ extension SessionStore {
         scheduleSave()
     }
 
-    /// A new Claude session in `directory` whose first message is `prompt`, with the same Remote Control setting
-    /// and extra arguments as `source`. Selected only when `source` is still the active session.
+    /// A new Claude session in `directory` whose first message is `prompt`, with the same Remote Control setting,
+    /// model and extra arguments as `source`. Selected only when `source` is still the active session.
     @discardableResult
     func newClaude(continuing source: TerminalSession, in directory: String, prompt: String) -> TerminalSession {
         var spec = LaunchSpec.claude(directory, remoteControl: source.spec.claude?.remoteControl ?? settings.remoteControlByDefault)
         spec.claude?.extraArgs = source.spec.claude?.extraArgs ?? []
+        spec.claude?.model = source.spec.claude?.model ?? defaultClaudeModel
         spec.claude?.initialPrompt = prompt
         return newSession(spec, select: activeSession === source)
     }

@@ -68,6 +68,8 @@ enum AppActions {
         var info = "\(process) is still running in this session. Closing the session ends it."
         if session.spec.kind == .claude {
             info += " The conversation can be picked up again later with claude --resume."
+        } else if session.spec.kind == .codex {
+            info += " The conversation can be picked up again later with codex resume."
         }
         alert.informativeText = info
         alert.addButton(withTitle: "Close").hasDestructiveAction = true

@@ -20,6 +20,9 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
     private lazy var usageHost = NSHostingView(rootView: UsageStrip(monitor: .shared, state: usageState))
     private var usageObservations: Set<AnyCancellable> = []
 
+    private let modelState = ModelPickerState()
+    private lazy var modelHost = NSHostingView(rootView: ModelPicker(state: modelState))
+
     init(store: SessionStore) {
         self.store = store
         let sidebarHost = NSHostingController(rootView: SidebarView(store: store))
@@ -149,6 +152,7 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
         if active?.id != observedSessionID {
             observedSessionID = active?.id
             usageState.activeSessionID = active?.id
+            modelState.session = active
             sessionObservation = active.map { session in
                 Publishers.Merge3(
                     session.$customName.map { _ in () },
@@ -199,16 +203,24 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
     // MARK: - NSToolbarDelegate
 
     func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-        [.toggleSidebar, .sidebarTrackingSeparator, .flexibleSpace] + (store.settings.showUsageInToolbar ? [.conchUsage] : [])
+        [.toggleSidebar, .sidebarTrackingSeparator, .flexibleSpace, .conchModel]
+            + (store.settings.showUsageInToolbar ? [.conchUsage] : [])
     }
 
     func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-        [.toggleSidebar, .sidebarTrackingSeparator, .flexibleSpace, .conchUsage]
+        [.toggleSidebar, .sidebarTrackingSeparator, .flexibleSpace, .conchModel, .conchUsage]
     }
 
     func toolbar(_ toolbar: NSToolbar,
                  itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier,
                  willBeInsertedIntoToolbar flag: Bool) -> NSToolbarItem? {
+        if itemIdentifier == .conchModel {
+            let item = NSToolbarItem(itemIdentifier: itemIdentifier)
+            item.label = "Model"
+            item.paletteLabel = "Model"
+            item.view = modelHost
+            return item
+        }
         guard itemIdentifier == .conchUsage else { return nil }
         let item = NSToolbarItem(itemIdentifier: itemIdentifier)
         item.label = "Usage"
@@ -220,4 +232,5 @@ final class MainWindowController: NSWindowController, NSWindowDelegate, NSToolba
 
 private extension NSToolbarItem.Identifier {
     static let conchUsage = NSToolbarItem.Identifier("ConchUsage")
+    static let conchModel = NSToolbarItem.Identifier("ConchModel")
 }

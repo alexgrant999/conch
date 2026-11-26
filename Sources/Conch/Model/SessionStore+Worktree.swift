@@ -21,7 +21,7 @@ extension SessionStore {
         guard let root = LaunchCommand.worktreeCapableRoot(for: resolvedDirectory(dir)),
               let name = uniqueWorktreeName(in: root) else { return nil }
         Self.excludeWorktrees(inRepository: root)
-        var spec = LaunchSpec.claude(root, remoteControl: settings.remoteControlByDefault)
+        var spec = newClaudeSpec(in: root)
         spec.claude?.worktree = name
         return newSession(spec)
     }

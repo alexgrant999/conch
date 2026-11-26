@@ -236,13 +236,10 @@ final class SessionStore: ObservableObject {
         newSession(.shell(resolvedDirectory(dir)), splitInto: split ? selectedGroupID : nil)
     }
 
-    /// Claude session with remote control set from `settings.remoteControlByDefault`.
+    /// Claude session with Remote Control and model from the settings (see `newClaudeSpec`).
     @discardableResult
     func newClaude(in dir: String? = nil, split: Bool = false) -> TerminalSession {
-        newSession(
-            .claude(resolvedDirectory(dir), remoteControl: settings.remoteControlByDefault),
-            splitInto: split ? selectedGroupID : nil
-        )
+        newSession(newClaudeSpec(in: resolvedDirectory(dir)), splitInto: split ? selectedGroupID : nil)
     }
 
     /// Resumes an existing Claude Code conversation (`claude --resume <id>`) in `dir`, the directory it ran in.

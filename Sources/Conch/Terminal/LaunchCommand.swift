@@ -27,10 +27,10 @@ enum LaunchCommand {
         return "/bin/zsh"
     }
 
-    /// The Claude CLI argv for a session, or nil for `.shell`.
+    /// The agent CLI argv for a session (claude, or codex, see `codexArgv`), or nil for `.shell`.
     /// Rules:
     /// - `.claude`, no transcript yet: `claude --session-id <uuid>` then `--remote-control=<name>` when enabled,
-    ///   then extraArgs.
+    ///   then `--model=<model>` when set, then extraArgs.
     /// - `.claude`, the transcript exists (a restore, or resuming a conversation started elsewhere):
     ///   `claude --resume <uuid>` (plus remote control and extraArgs).
     /// - `.cloud` with an attach target (`isCloudAttachTarget`): `claude --cloud=<target>`, new or restoring.
@@ -58,6 +58,7 @@ enum LaunchCommand {
                 argv.append("--remote-control=\(displayName)")
             }
             argv += contextArguments(for: spec)
+            argv += modelArguments(for: options)
             argv += options.extraArgs
             if !resuming {
                 argv += initialPromptArguments(for: options)
@@ -67,6 +68,8 @@ enum LaunchCommand {
             let target = (options.cloudTarget ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
             if restoring, !isCloudAttachTarget(target) { return nil }
             return ["claude", target.isEmpty ? "--cloud" : "--cloud=\(target)"] + options.extraArgs
+        case .codex:
+            return codexArgv(for: spec)
         }
     }
 

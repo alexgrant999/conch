@@ -5,7 +5,7 @@ import Foundation
 enum ConchInfo {
     static let appName = "Conch"
     static let bundleID = "com.alexgrant.conch"
-    static let version = "0.2.1"
+    static let version = "0.3.0"
     /// A test run (CONCH_STATE_PATH set). It stays in the background, with no Dock icon and never activated, so a
     /// smoke test or a builder's throwaway instance never takes focus from the app in use.
     static let isIsolated = !(ProcessInfo.processInfo.environment["CONCH_STATE_PATH"] ?? "").isEmpty
@@ -19,6 +19,8 @@ enum SessionKind: String, Codable, CaseIterable {
     case claude
     /// `claude --cloud ...`: a Claude Code web session started or attached from this terminal.
     case cloud
+    /// OpenAI's Codex CLI. Resumes with `codex resume <id>` once Codex has recorded the session.
+    case codex
 }
 
 struct ClaudeOptions: Codable, Equatable {
@@ -35,6 +37,20 @@ struct ClaudeOptions: Codable, Equatable {
     var worktree: String? = nil
     /// `.claude` only: the first message, sent on the first launch only, never when resuming.
     var initialPrompt: String? = nil
+    /// `.claude` only: passed as `--model=<model>` on every launch, new or resumed. An alias ("opus") or a full
+    /// model id. Follows the model Claude Code reports, so a relaunch keeps the one in use. nil starts with
+    /// Claude Code's own default.
+    var model: String? = nil
+}
+
+struct CodexOptions: Codable, Equatable {
+    /// Codex's own session id, read from its session files after it starts (CodexSessionTracker). With it a launch
+    /// runs `codex resume <id>`. nil until Codex has recorded the session.
+    var sessionID: String? = nil
+    /// The first message, passed on the first launch only and cleared from the spec once the session has started.
+    var initialPrompt: String? = nil
+    /// Extra CLI args appended verbatim, one argv entry each.
+    var extraArgs: [String] = []
 }
 
 struct LaunchSpec: Codable, Equatable {
@@ -46,6 +62,8 @@ struct LaunchSpec: Codable, Equatable {
     /// `.shell` only: a command run in the login shell when the pane starts and again on every restore (for
     /// example `npm run dev`). The pane drops into a plain shell when it exits. nil runs a bare shell.
     var command: String? = nil
+    /// Required for `.codex`, nil for the other kinds.
+    var codex: CodexOptions? = nil
 
     static func shell(_ cwd: String) -> LaunchSpec {
         LaunchSpec(kind: .shell, cwd: cwd, claude: nil)
@@ -57,6 +75,10 @@ struct LaunchSpec: Codable, Equatable {
 
     static func cloud(_ cwd: String, target: String) -> LaunchSpec {
         LaunchSpec(kind: .cloud, cwd: cwd, claude: ClaudeOptions(cloudTarget: target))
+    }
+
+    static func codex(_ cwd: String, prompt: String? = nil) -> LaunchSpec {
+        LaunchSpec(kind: .codex, cwd: cwd, claude: nil, codex: CodexOptions(initialPrompt: prompt))
     }
 }
 

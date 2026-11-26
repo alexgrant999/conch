@@ -32,7 +32,8 @@ extension SessionStore {
     func openLayout(_ layout: ProjectLayout) -> [TerminalSession] {
         var opened: [TerminalSession] = []
         for pane in layout.panes {
-            guard let spec = pane.openingSpec(fallbackDirectory: layout.root) else { continue }
+            guard var spec = pane.openingSpec(fallbackDirectory: layout.root) else { continue }
+            if spec.kind == .claude, spec.claude?.model == nil { spec.claude?.model = defaultClaudeModel }
             let groupID = opened.first.flatMap { group(containing: $0)?.id }
             opened.append(newSession(spec, customName: pane.customName, splitInto: groupID, select: opened.isEmpty))
         }
@@ -44,7 +45,7 @@ extension LayoutPane {
     /// How a live pane is saved, nil for a web session. Shell panes keep their startup command and their live
     /// folder, except that a pane with a command keeps spec.cwd: the command runs there, and the live folder may be
     /// wherever the command cd'd to. Claude panes get a fresh spec with the same folder and remote control setting,
-    /// so no conversation id or worktree is carried into the layout.
+    /// so no conversation id or worktree is carried into the layout. Codex panes get a fresh spec in the same folder.
     static func saving(_ spec: LaunchSpec, customName: String?, liveDirectory: String) -> LayoutPane? {
         switch spec.kind {
         case .shell:
@@ -55,6 +56,8 @@ extension LayoutPane {
         case .claude:
             return LayoutPane(customName: customName,
                               spec: .claude(spec.cwd, remoteControl: spec.claude?.remoteControl ?? false))
+        case .codex:
+            return LayoutPane(customName: customName, spec: .codex(spec.cwd))
         case .cloud:
             return nil
         }
@@ -73,6 +76,9 @@ extension LayoutPane {
             var options = opening.claude ?? ClaudeOptions()
             options.sessionID = UUID()
             opening.claude = options
+        }
+        if opening.kind == .codex {
+            opening.codex = CodexOptions(extraArgs: opening.codex?.extraArgs ?? [])
         }
         return opening
     }

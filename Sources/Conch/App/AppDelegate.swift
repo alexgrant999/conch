@@ -54,6 +54,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
         store.restore()
         startAttentionStatusItem()
         startContextMonitor()
+        CodexSessionTracker.shared.start()
         windowController.showMainWindow()
     }
 
@@ -72,8 +73,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
             "• \(session.foregroundProcess ?? "a process") in \(session.displayName)"
         }
         var info = "Quitting ends:\n" + lines.joined(separator: "\n")
-        if store.settings.restoreSessionsOnLaunch, running.contains(where: { $0.spec.kind == .claude }) {
-            info += "\n\nClaude sessions resume on next launch."
+        if store.settings.restoreSessionsOnLaunch, running.contains(where: { $0.spec.kind == .claude || $0.spec.kind == .codex }) {
+            info += "\n\nClaude and Codex sessions resume on next launch."
         }
         alert.informativeText = info
         alert.addButton(withTitle: "Quit")
@@ -189,6 +190,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
         menu.addItem(item("New Terminal", #selector(newTerminal(_:)), "t"))
         menu.addItem(item("New Web Session", #selector(newWebSession(_:)), "N"))
         addWorktreeMenuItems(to: menu)
+        addCodexMenuItems(to: menu)
         menu.addItem(.separator())
         menu.addItem(item("Open Folder…", #selector(openFolder(_:)), "o"))
         menu.addItem(item("Quick Open", #selector(quickOpen(_:)), "p"))
@@ -208,6 +210,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
         menu.addItem(item("Copy Session ID", #selector(copySessionID(_:)), "C"))
         addLayoutMenuItems(to: menu)
         addContextMenuItems(to: menu)
+        addModelMenuItems(to: menu)
+        addReviewMenuItems(to: menu)
         return menu
     }
 

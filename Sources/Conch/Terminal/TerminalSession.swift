@@ -22,6 +22,11 @@ final class TerminalSession: ObservableObject, Identifiable {
     @Published private(set) var foregroundProcess: String?
     /// Context use reported by Claude Code (Claude sessions only). nil until the first report.
     @Published var context: ContextUsage?
+    /// The model Claude Code last reported, as it names it ("Opus 5.5"). Claude sessions only, nil until the first
+    /// report and again once claude exits to the shell.
+    @Published var modelName: String?
+    /// When the user last typed or pasted into the session. nil until then.
+    private(set) var lastInputAt: Date?
 
     /// Fired when attention escalates to `.done` or `.needsInput` while not visible. The store routes it to Notifier.
     var onAttention: ((TerminalSession, Attention) -> Void)?
@@ -83,7 +88,8 @@ final class TerminalSession: ObservableObject, Identifiable {
         // Option+Return, Option+Backspace and Option+arrows stay Meta even when Option-as-Meta is off for text.
         view.optionAsMetaKeyForFunctionalKeys = true
         view.activityTracker = tracker
-        view.cleansCopiedText = spec.kind != .shell
+        // The cleanup knows Claude Code's layout only.
+        view.cleansCopiedText = spec.kind == .claude || spec.kind == .cloud
         view.processDelegate = self
         view.setProcessOutputHandler { [tracker] in tracker.noteOutput() }
         view.onBell = { [weak self] in self?.raiseAttention(.needsInput(message: nil), notify: true) }
@@ -93,6 +99,7 @@ final class TerminalSession: ObservableObject, Identifiable {
         }
         view.onUserInput = { [weak self] in
             guard let self else { return }
+            self.lastInputAt = Date()
             self.onUse?(self, .input)
         }
         applyAppearance(fontSize: 13, optionAsMeta: true)
@@ -101,12 +108,13 @@ final class TerminalSession: ObservableObject, Identifiable {
     /// customName, else the sanitized title, else `defaultName`.
     var displayName: String { customName ?? (title.isEmpty ? defaultName : title) }
 
-    /// "Claude", "Web session", or the shell name ("zsh").
+    /// "Claude", "Web session", "Codex", or the shell name ("zsh").
     var defaultName: String {
         switch spec.kind {
         case .shell: return Self.shellName
         case .claude: return "Claude"
         case .cloud: return "Web session"
+        case .codex: return "Codex"
         }
     }
 

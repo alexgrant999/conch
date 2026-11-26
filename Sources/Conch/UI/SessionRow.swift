@@ -10,11 +10,18 @@ enum SessionGlyph {
         case .shell: return "terminal"
         case .claude: return "sparkle"
         case .cloud: return "cloud"
+        case .codex: return "hexagon"
         }
     }
 
+    static let codexGreen = Color(red: 16 / 255, green: 163 / 255, blue: 127 / 255)
+
     static func tint(for kind: SessionKind) -> Color {
-        kind == .claude ? claudeOrange : .secondary
+        switch kind {
+        case .claude: return claudeOrange
+        case .codex: return codexGreen
+        case .shell, .cloud: return .secondary
+        }
     }
 }
 

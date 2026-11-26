@@ -456,7 +456,8 @@ final class PaletteModel: ObservableObject {
                 command("Clear Scrollback", "eraser", "⌘K", detail: name) { active.clearScrollback() },
             ]
         }
-        all += worktreeCommands() + layoutCommands() + contextCommands() + attentionCommands()
+        all += codexCommands() + worktreeCommands() + layoutCommands() + contextCommands() + modelCommands() + reviewCommands()
+            + attentionCommands()
         all += moduleCommands()
         all += [
             command("Toggle Sidebar", "sidebar.left", "⌘B") { AppActions.toggleSidebar() },

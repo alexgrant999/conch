@@ -18,6 +18,11 @@ final class AppSettings: ObservableObject {
     @Published var remoteControlByDefault: Bool = true {
         didSet { defaults.set(remoteControlByDefault, forKey: Key.remoteControlByDefault) }
     }
+    /// Model new Claude sessions start with, the `model` of one of `ClaudeModels.all` (a family alias or a specific
+    /// model id). "" (the default) leaves it to Claude Code's own default.
+    @Published var defaultModel: String = "" {
+        didSet { defaults.set(defaultModel, forKey: Key.defaultModel) }
+    }
     /// Default true. Plan limits and the last prompt's cost at the trailing end of the main window's toolbar.
     @Published var showUsageInToolbar: Bool = true {
         didSet { defaults.set(showUsageInToolbar, forKey: Key.showUsageInToolbar) }
@@ -77,6 +82,7 @@ final class AppSettings: ObservableObject {
         static let fontSize = "conch.fontSize"
         static let optionAsMeta = "conch.optionAsMeta"
         static let remoteControlByDefault = "conch.remoteControlByDefault"
+        static let defaultModel = "conch.defaultModel"
         static let showUsageInToolbar = "conch.showUsageInToolbar"
         static let cleanCopiedText = "conch.cleanCopiedText"
         static let restoreSessionsOnLaunch = "conch.restoreSessionsOnLaunch"
@@ -99,6 +105,9 @@ final class AppSettings: ObservableObject {
         }
         if let value = defaults.object(forKey: Key.optionAsMeta) as? Bool { optionAsMeta = value }
         if let value = defaults.object(forKey: Key.remoteControlByDefault) as? Bool { remoteControlByDefault = value }
+        if let value = defaults.string(forKey: Key.defaultModel), ClaudeModels.all.contains(where: { $0.model == value }) {
+            defaultModel = value
+        }
         if let value = defaults.object(forKey: Key.showUsageInToolbar) as? Bool { showUsageInToolbar = value }
         if let value = defaults.object(forKey: Key.cleanCopiedText) as? Bool { cleanCopiedText = value }
         if let value = defaults.object(forKey: Key.restoreSessionsOnLaunch) as? Bool { restoreSessionsOnLaunch = value }

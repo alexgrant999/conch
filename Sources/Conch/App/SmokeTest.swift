@@ -149,7 +149,7 @@ final class SmokeTest {
         record("8 claude on login PATH", found,
                claudePath.map { "command -v claude: \($0)" } ?? "no absolute path, buffer tail: \(tail(shell.bufferText()))")
 
-        // 11 to 19: one check per feature added after v0.1, each in its own SmokeTest+<Feature>.swift.
+        // 11 to 21: one check per feature added after v0.1, each in its own SmokeTest+<Feature>.swift.
         await checkRecentConversations(directory: directory)
         await checkAttentionJump(directory: directory)
         await checkLayouts(directory: directory)
@@ -159,6 +159,8 @@ final class SmokeTest {
         await checkUsage(directory: directory)
         await checkOlder(directory: directory)
         await checkProjectIcons(directory: directory)
+        await checkModel(directory: directory)
+        await checkCodex(directory: directory)
 
         // 9. Closing a pane kills a foreground job that ignores SIGHUP and SIGTERM (servers reload on SIGHUP).
         let closedJob = await startStubbornJob(in: directory)
